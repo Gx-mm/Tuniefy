@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "991800434118",
+    "project_id": "tuniefy",
+    "storage_bucket": "tuniefy.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:991800434118:android:4a42c4814c054948db26c7",
+        "android_client_info": {
+          "package_name": "com.tuniefy.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "991800434118-aehbnj5cl96gslbjmfpb76trvppdfv7h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tuniefy.app",
+            "certificate_hash": "e73b224c9bf70cf5166b2eb9a85325df8faa5de0"
+          }
+        },
+        {
+          "client_id": "991800434118-biip9ivjuc08l14pdt6nplsiuf6h1uc0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB89xmC7khtOW-u7T-HiSI7uaq5UdxSato"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "991800434118-biip9ivjuc08l14pdt6nplsiuf6h1uc0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
