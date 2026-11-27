@@ -1,7 +1,7 @@
 {
   "appId": "com.tuniefy.app",
   "appName": "Tuniefy",
-  "webDir": "tuniefy",
+  "webDir": "web2app-frontend",
   "bundledWebRuntime": false,
   "server": {
     "url": "https://tuniefy.vercel.app/",
@@ -23,4 +23,3 @@
     }
   }
 }
-
