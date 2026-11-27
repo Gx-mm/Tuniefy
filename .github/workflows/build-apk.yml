@@ -37,11 +37,14 @@ jobs:
         run: |
           sed -i 's/minSdkVersion = 22/minSdkVersion = 23/g' android/variables.gradle
 
-      - name: Setup App Icon from icon.png
+      - name: Setup App Icon (icon.png or appicon.png)
         run: |
+          mkdir -p resources
           if [ -f "icon.png" ]; then
-            mkdir -p resources
             cp icon.png resources/icon.png
+            npx capacitor-assets generate --android --iconBackgroundColor '#0d9488'
+          elif [ -f "appicon.png" ]; then
+            cp appicon.png resources/icon.png
             npx capacitor-assets generate --android --iconBackgroundColor '#0d9488'
           fi
 
@@ -51,14 +54,14 @@ jobs:
             cp google-services.json android/app/google-services.json
             echo "google-services.json copied successfully."
           else
-            echo "::error::google-services.json repo ke root mein nahi mili! Firebase Console se download karke upload karein."
+            echo "::error::google-services.json repo ke root mein nahi mili!"
             exit 1
           fi
 
       - name: Sync Capacitor Android
         run: npx cap sync android
 
-      - name: Setup Debug Keystore & Print SHA-1 Fingerprint
+      - name: Setup Debug Keystore
         run: |
           mkdir -p ~/.android
           if [ -f "debug.keystore" ]; then
@@ -70,12 +73,9 @@ jobs:
               -keyalg RSA -keysize 2048 -validity 10000 \
               -dname "CN=Tuniefy,O=Tuniefy,C=IN"
             cp ~/.android/debug.keystore ./debug.keystore
-            echo "New debug.keystore generated."
           fi
-          echo "================ COPY THIS SHA-1 FOR FIREBASE ================"
           keytool -list -v -keystore ~/.android/debug.keystore \
             -alias androiddebugkey -storepass android -keypass android | grep "SHA1:"
-          echo "=============================================================="
 
       - name: Build Debug APK
         run: |
@@ -91,10 +91,4 @@ jobs:
         with:
           name: Tuniefy-Android-APK
           path: Tuniefy-App.apk
-
-      - name: Upload Debug Keystore (Save Once for Fixed SHA-1)
-        uses: actions/upload-artifact@v4
-        with:
-          name: Tuniefy-Debug-Keystore
-          path: debug.keystore
           
