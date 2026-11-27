@@ -37,11 +37,11 @@ jobs:
         run: |
           sed -i 's/minSdkVersion = 22/minSdkVersion = 23/g' android/variables.gradle
 
-      - name: Setup App Icon from appicon.png
+      - name: Setup App Icon from icon.png
         run: |
-          if [ -f "appicon.png" ]; then
+          if [ -f "icon.png" ]; then
             mkdir -p resources
-            cp appicon.png resources/icon.png
+            cp icon.png resources/icon.png
             npx capacitor-assets generate --android --iconBackgroundColor '#0d9488'
           fi
 
