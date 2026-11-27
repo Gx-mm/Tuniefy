@@ -1,13 +1,13 @@
 {
   "appId": "com.tuniefy.app",
   "appName": "Tuniefy",
-  "webDir": "web2app-frontend",
+  "webDir": "tuniefy",
   "bundledWebRuntime": false,
   "server": {
-    "url": "https://ravitoolz.vercel.app/Tuniefy/",
+    "url": "https://tuniefy.vercel.app/",
     "cleartext": true,
     "allowNavigation": [
-      "ravitoolz.vercel.app",
+      "tuniefy.vercel.app",
       "*.firebaseapp.com",
       "*.googleapis.com",
       "accounts.google.com"
