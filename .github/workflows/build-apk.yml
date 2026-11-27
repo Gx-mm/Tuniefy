@@ -37,17 +37,6 @@ jobs:
         run: |
           sed -i 's/minSdkVersion = 22/minSdkVersion = 23/g' android/variables.gradle
 
-      - name: Setup App Icon (icon.png or appicon.png)
-        run: |
-          mkdir -p resources
-          if [ -f "icon.png" ]; then
-            cp icon.png resources/icon.png
-            npx capacitor-assets generate --android --iconBackgroundColor '#0d9488'
-          elif [ -f "appicon.png" ]; then
-            cp appicon.png resources/icon.png
-            npx capacitor-assets generate --android --iconBackgroundColor '#0d9488'
-          fi
-
       - name: Copy google-services.json to Android App
         run: |
           if [ -f "google-services.json" ]; then
