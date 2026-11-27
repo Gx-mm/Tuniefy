@@ -1,0 +1,100 @@
+name: Build Tuniefy Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install NPM Dependencies
+        run: npm install
+
+      - name: Add Android Platform
+        run: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
+
+      - name: Bump minSdkVersion to 23 (Required for Firebase Auth)
+        run: |
+          sed -i 's/minSdkVersion = 22/minSdkVersion = 23/g' android/variables.gradle
+
+      - name: Setup App Icon from appicon.png
+        run: |
+          if [ -f "appicon.png" ]; then
+            mkdir -p resources
+            cp appicon.png resources/icon.png
+            npx capacitor-assets generate --android --iconBackgroundColor '#0d9488'
+          fi
+
+      - name: Copy google-services.json to Android App
+        run: |
+          if [ -f "google-services.json" ]; then
+            cp google-services.json android/app/google-services.json
+            echo "google-services.json copied successfully."
+          else
+            echo "::error::google-services.json repo ke root mein nahi mili! Firebase Console se download karke upload karein."
+            exit 1
+          fi
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
+
+      - name: Setup Debug Keystore & Print SHA-1 Fingerprint
+        run: |
+          mkdir -p ~/.android
+          if [ -f "debug.keystore" ]; then
+            cp debug.keystore ~/.android/debug.keystore
+            echo "Existing debug.keystore loaded."
+          else
+            keytool -genkey -v -keystore ~/.android/debug.keystore \
+              -storepass android -alias androiddebugkey -keypass android \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=Tuniefy,O=Tuniefy,C=IN"
+            cp ~/.android/debug.keystore ./debug.keystore
+            echo "New debug.keystore generated."
+          fi
+          echo "================ COPY THIS SHA-1 FOR FIREBASE ================"
+          keytool -list -v -keystore ~/.android/debug.keystore \
+            -alias androiddebugkey -storepass android -keypass android | grep "SHA1:"
+          echo "=============================================================="
+
+      - name: Build Debug APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Rename Final APK
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk Tuniefy-App.apk
+
+      - name: Upload Tuniefy APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tuniefy-Android-APK
+          path: Tuniefy-App.apk
+
+      - name: Upload Debug Keystore (Save Once for Fixed SHA-1)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tuniefy-Debug-Keystore
+          path: debug.keystore
+          
